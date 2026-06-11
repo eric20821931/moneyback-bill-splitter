@@ -753,17 +753,23 @@ export const GroupDetail: React.FC = () => {
   return (
     <div className="space-y-8 pb-20">
       {/* Header Navigation */}
-      <div className="flex items-center justify-between mb-8">
-        <Button variant="ghost" onClick={() => navigate('/')} className="rounded-full px-4 font-bold text-xs uppercase tracking-widest">
-          <ArrowLeft className="mr-2" size={16} /> {t('back_to_dashboard')}
+      <div className="mb-8 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/')}
+          className="h-10 w-full justify-start rounded-full px-4 text-[11px] font-bold uppercase tracking-wide sm:w-auto sm:text-xs sm:tracking-widest"
+        >
+          <ArrowLeft className="mr-2 shrink-0" size={16} />
+          <span className="min-w-0 truncate">{t('back_to_dashboard')}</span>
         </Button>
-        <div className="flex items-center gap-2">
+        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_2.5rem] items-center gap-2 sm:flex sm:justify-end">
           <Dialog open={isInviting} onOpenChange={(open) => {
             setIsInviting(open);
             if (!open) setSelectedInviteFriendId('');
           }}>
-            <DialogTrigger className="inline-flex shrink-0 items-center justify-center rounded-full border border-slate-200 dark:border-white/10 bg-background dark:bg-[#121212] shadow-none font-bold text-xs uppercase tracking-widest px-6 h-10 hover:bg-slate-100 hover:dark:bg-[#1f1f1f] transition-colors">
-              <UserPlus size={16} className="mr-2" /> {t('invite_friends')}
+            <DialogTrigger className="inline-flex h-10 min-w-0 items-center justify-center rounded-full border border-slate-200 bg-background px-4 text-[11px] font-bold uppercase tracking-wide shadow-none transition-colors hover:bg-slate-100 dark:border-white/10 dark:bg-[#121212] hover:dark:bg-[#1f1f1f] sm:w-auto sm:shrink-0 sm:px-6 sm:text-xs sm:tracking-widest">
+              <UserPlus size={16} className="mr-2 shrink-0" />
+              <span className="min-w-0 truncate">{t('invite_friends')}</span>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 dark:border-white/10 dark:bg-[#121212] shadow-none">
               <DialogHeader>
