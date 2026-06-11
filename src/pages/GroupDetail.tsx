@@ -793,7 +793,7 @@ export const GroupDetail: React.FC = () => {
               <UserPlus size={16} className="mr-2 shrink-0" />
               <span className="min-w-0 truncate">{t('invite_friends')}</span>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 dark:border-white/10 dark:bg-[#121212] shadow-none">
+            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 bg-white shadow-none dark:border-white/10 dark:bg-[#121212]">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-black uppercase tracking-tight">{t('invite_friends')}</DialogTitle>
               </DialogHeader>
@@ -844,7 +844,7 @@ export const GroupDetail: React.FC = () => {
             >
               <Settings size={16} />
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 dark:border-white/10 dark:bg-[#121212] shadow-none">
+            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 bg-white shadow-none dark:border-white/10 dark:bg-[#121212]">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-black uppercase tracking-tight">{t('group_settings')}</DialogTitle>
               </DialogHeader>
@@ -896,7 +896,7 @@ export const GroupDetail: React.FC = () => {
               setEditExpenseError('');
             }
           }}>
-            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 dark:border-white/10 dark:bg-[#121212] shadow-none">
+            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 bg-white shadow-none dark:border-white/10 dark:bg-[#121212]">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-black uppercase tracking-tight">{t('edit_expense')}</DialogTitle>
               </DialogHeader>
@@ -1083,7 +1083,7 @@ export const GroupDetail: React.FC = () => {
             <DialogTrigger className="inline-flex shrink-0 items-center justify-center rounded-full h-14 px-8 bg-black dark:bg-[#1ed760] text-white dark:text-black hover:bg-[#1ed760] hover:dark:bg-[#1ed760] hover:text-black font-black text-sm uppercase tracking-tight transition-colors border border-transparent shadow-none">
               {t('add_expense')}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 dark:border-white/10 dark:bg-[#121212] shadow-none">
+            <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 bg-white shadow-none dark:border-white/10 dark:bg-[#121212]">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-black uppercase tracking-tight">{t('add_expense')}</DialogTitle>
               </DialogHeader>
@@ -1368,7 +1368,7 @@ export const GroupDetail: React.FC = () => {
                    <DialogTrigger className="inline-flex shrink-0 items-center justify-center flex-1 rounded-full h-14 bg-black dark:bg-[#1ed760] text-white dark:text-black hover:bg-[#1ed760] hover:text-black font-black uppercase tracking-widest text-xs shadow-none">
                      {t('settle_up')}
                    </DialogTrigger>
-                   <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 dark:border-white/10 dark:bg-[#121212] shadow-none">
+                   <DialogContent className="sm:max-w-md rounded-lg border border-slate-200 bg-white shadow-none dark:border-white/10 dark:bg-[#121212]">
                      <DialogHeader>
                        <DialogTitle className="text-2xl font-black uppercase tracking-tight">{t('settle_up')}</DialogTitle>
                      </DialogHeader>
