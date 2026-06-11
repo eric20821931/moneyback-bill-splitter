@@ -1,5 +1,5 @@
-const CACHE_NAME = 'moneyback-shell-v2';
-const APP_SHELL = ['/', '/favicon.svg', '/manifest.webmanifest'];
+const CACHE_NAME = 'moneyback-shell-v3';
+const APP_SHELL = ['/', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
