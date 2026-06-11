@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
-import { UserProfile } from '@/src/types';
+import { UserProfile } from '@/types';
 
 type ApiRequest = <T = any>(action: string, payload?: Record<string, unknown>) => Promise<T>;
 

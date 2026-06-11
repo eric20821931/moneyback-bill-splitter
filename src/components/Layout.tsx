@@ -14,10 +14,10 @@ import {
   X,
   PieChart,
 } from 'lucide-react';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ProjectIcon } from '@/src/components/ProjectIcon';
+import { ProjectIcon } from '@/components/ProjectIcon';
 import { cn } from '@/lib/utils';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

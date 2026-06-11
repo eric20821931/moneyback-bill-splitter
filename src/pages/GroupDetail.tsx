@@ -10,8 +10,8 @@ import {
   Trash2,
   Pencil,
 } from 'lucide-react';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { Group, Expense, Currency } from '@/src/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { Group, Expense, Currency } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

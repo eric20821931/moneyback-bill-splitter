@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { ArrowRight, Globe, ShieldCheck } from 'lucide-react';
 import { SignInButton } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
-import { ProjectIcon } from '@/src/components/ProjectIcon';
+import { ProjectIcon } from '@/components/ProjectIcon';
 
 export const Landing: React.FC = () => {
   const { t } = useTranslation();

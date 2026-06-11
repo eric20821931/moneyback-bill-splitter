@@ -6,11 +6,11 @@ import {
   User,
   LogOut
 } from 'lucide-react';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Currency } from '@/src/types';
+import { Currency } from '@/types';
 
 const CURRENCIES: Currency[] = ['TWD', 'USD', 'HKD', 'JPY', 'EUR', 'AUD'];
 

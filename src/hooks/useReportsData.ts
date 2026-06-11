@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Group, Expense } from '@/src/types';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { Group, Expense } from '@/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const useReportsData = (profileUid: string | undefined) => {
   const [loading, setLoading] = useState(true);

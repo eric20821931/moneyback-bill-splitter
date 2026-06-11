@@ -11,8 +11,8 @@ import {
   Search,
   Users2
 } from 'lucide-react';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { Group } from '@/src/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { Group } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,8 +27,8 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { motion, AnimatePresence } from 'motion/react';
 
-import { useBalances } from '@/src/hooks/useBalances';
-import { Currency } from '@/src/types';
+import { useBalances } from '@/hooks/useBalances';
+import { Currency } from '@/types';
 
 const CURRENCIES: Currency[] = ['TWD', 'USD', 'HKD', 'JPY', 'EUR', 'AUD'];
 type CurrencyTotals = { totalBalance: number; totalOwedToYou: number; totalYouOwe: number };

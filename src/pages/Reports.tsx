@@ -5,9 +5,9 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { useReportsData } from '@/src/hooks/useReportsData';
-import { Currency } from '@/src/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { useReportsData } from '@/hooks/useReportsData';
+import { Currency } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
