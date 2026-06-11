@@ -855,11 +855,11 @@ export const GroupDetail: React.FC = () => {
                     {group.memberIds.map((mId) => (
                       <div key={mId} className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-white/10 dark:bg-[#1f1f1f]">
                         {renderMemberAvatar(mId, "h-10 w-10 shrink-0", "text-xs")}
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-black tracking-tight">{getMemberName(mId)}</p>
-                          {mId === profile?.uid && (
-                            <div className="mt-1">{renderYouBadge(mId)}</div>
-                          )}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex min-w-0 items-center gap-2">
+                            <p className="min-w-0 truncate text-sm font-black tracking-tight">{getMemberName(mId)}</p>
+                            {renderYouBadge(mId)}
+                          </div>
                           {mId === group.ownerId && (
                             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{t('owner')}</p>
                           )}
