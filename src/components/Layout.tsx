@@ -34,8 +34,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   }, [profile?.theme]);
 
   useEffect(() => {
-    if (profile?.language && i18n.language !== profile.language) {
-      i18n.changeLanguage(profile.language);
+    const localLanguage = window.localStorage.getItem('moneyback_language_version') === '2'
+      ? window.localStorage.getItem('moneyback_language')
+      : null;
+    const language = localLanguage || profile?.language;
+    if (language && i18n.language !== language) {
+      void i18n.changeLanguage(language);
     }
   }, [profile?.language, i18n]);
 
