@@ -26,6 +26,7 @@ export const Landing: React.FC = () => {
   const toggleLanguage = async () => {
     const nextLanguage = i18n.language === 'en' ? 'zh' : 'en';
     window.localStorage.setItem('moneyback_language', nextLanguage);
+    window.localStorage.setItem('moneyback_language_version', '2');
     await i18n.changeLanguage(nextLanguage);
   };
 

@@ -21,7 +21,7 @@ import { ProjectIcon } from '@/components/ProjectIcon';
 import { cn } from '@/lib/utils';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { profile, request, refreshProfile, signOut } = useAuth();
+  const { profile, request, signOut } = useAuth();
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -47,22 +47,26 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     }
   }, [theme]);
 
-  const toggleTheme = async () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    if (profile) {
-      await request('profile.update', { theme: newTheme });
-      await refreshProfile();
-    }
+  const syncPreference = (payload: Record<string, unknown>) => {
+    if (!profile) return;
+    void request('profile.update', payload).catch((error) => {
+      console.error('Failed to save preference:', error);
+    });
   };
 
-  const toggleLanguage = async () => {
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    window.localStorage.setItem('moneyback_theme', newTheme);
+    syncPreference({ theme: newTheme });
+  };
+
+  const toggleLanguage = () => {
     const newLanguage = i18n.language === 'en' ? 'zh' : 'en';
-    await i18n.changeLanguage(newLanguage);
-    if (profile) {
-      await request('profile.update', { language: newLanguage });
-      await refreshProfile();
-    }
+    window.localStorage.setItem('moneyback_language', newLanguage);
+    window.localStorage.setItem('moneyback_language_version', '2');
+    void i18n.changeLanguage(newLanguage);
+    syncPreference({ language: newLanguage });
   };
 
   const navItems = [

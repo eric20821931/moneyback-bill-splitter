@@ -1,4 +1,4 @@
-const CACHE_NAME = 'moneyback-shell-v1';
+const CACHE_NAME = 'moneyback-shell-v2';
 const APP_SHELL = ['/', '/favicon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
@@ -25,17 +25,13 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      caches.match('/')
-        .then((cached) => {
-          const fresh = fetch(request)
-            .then((response) => {
-              const copy = response.clone();
-              caches.open(CACHE_NAME).then((cache) => cache.put('/', copy));
-              return response;
-            })
-            .catch(() => cached);
-          return cached || fresh;
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('/', copy));
+          return response;
         })
+        .catch(() => caches.match('/'))
     );
     return;
   }

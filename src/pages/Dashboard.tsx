@@ -273,9 +273,19 @@ export const Dashboard: React.FC = () => {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="ghost" onClick={() => setIsAddingGroup(false)} className="rounded-full px-6 font-bold uppercase tracking-widest text-xs">{t('cancel')}</Button>
-              <Button onClick={handleCreateGroup} disabled={!newGroupName.trim()} className="rounded-full bg-black dark:bg-[#1ed760] text-white dark:text-black hover:bg-[#1ed760] hover:text-black font-bold uppercase tracking-widest text-xs px-8 shadow-none">
+            <DialogFooter className="flex-col gap-3 sm:flex-row">
+              <Button
+                variant="ghost"
+                onClick={() => setIsAddingGroup(false)}
+                className="h-14 w-full rounded-full px-6 text-sm font-bold uppercase tracking-widest sm:flex-1"
+              >
+                {t('cancel')}
+              </Button>
+              <Button
+                onClick={handleCreateGroup}
+                disabled={!newGroupName.trim()}
+                className="h-14 w-full rounded-full bg-black px-8 text-sm font-bold uppercase tracking-widest text-white shadow-none hover:bg-[#1ed760] hover:text-black dark:bg-[#1ed760] dark:text-black sm:flex-1"
+              >
                 {t('save')}
               </Button>
             </DialogFooter>

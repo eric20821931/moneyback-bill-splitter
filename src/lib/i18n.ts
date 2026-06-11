@@ -3,6 +3,11 @@ import { initReactI18next } from 'react-i18next';
 
 const getInitialLanguage = () => {
   if (typeof window === 'undefined') return 'en';
+  if (window.localStorage.getItem('moneyback_language_version') !== '2') {
+    window.localStorage.setItem('moneyback_language', 'en');
+    window.localStorage.setItem('moneyback_language_version', '2');
+    return 'en';
+  }
   return window.localStorage.getItem('moneyback_language') || 'en';
 };
 

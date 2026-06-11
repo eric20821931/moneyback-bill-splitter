@@ -60,7 +60,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const primaryEmail = clerkUser.primaryEmailAddress?.emailAddress || '';
     const displayName = clerkUser.fullName || clerkUser.username || primaryEmail || 'Anonymous User';
-    const language = window.localStorage.getItem('moneyback_language') || 'en';
+    const language = window.localStorage.getItem('moneyback_language_version') === '2'
+      ? window.localStorage.getItem('moneyback_language') || 'en'
+      : 'en';
     const theme = window.localStorage.getItem('moneyback_theme') || 'light';
     const data = await request<{ profile: UserProfile }>('profile.sync', {
       displayName,
