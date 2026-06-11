@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { BarChart3, TrendingUp, Wallet, List, Calendar } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell
 } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { useReportsData } from '@/hooks/useReportsData';
@@ -80,6 +80,22 @@ export const Reports: React.FC = () => {
     return rate > 0 ? amount * rate : 0;
   };
 
+  const getPayerName = (payerId: string, groupId: string) => {
+    if (payerId === profile?.uid) {
+      return profile.displayName || profile.email || t('you');
+    }
+    const group = groups.find((item) => item.id === groupId);
+    return group?.memberNames?.[payerId] || t('member');
+  };
+
+  const renderYouBadge = (payerId: string) => (
+    payerId === profile?.uid ? (
+      <span className="inline-flex shrink-0 rounded-full bg-[#1ed760] px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+        {t('you')}
+      </span>
+    ) : null
+  );
+
   const filteredExpenses = useMemo(() => {
     let result = expenses;
     if (selectedGroupId !== 'all') {
@@ -116,13 +132,23 @@ export const Reports: React.FC = () => {
     });
   }, [expenses, selectedGroupId, dateFilter]);
 
-  const { totalMyShare, totalPaidByMe, monthlyData, groupData } = useMemo(() => {
+  const { totalMyShare, totalPaidByMe, monthlyData, groupData, chartGroupData, reportExpenseCount, activeGroupCount, averageShare } = useMemo(() => {
     if (!profile || filteredExpenses.length === 0) {
-      return { totalMyShare: 0, totalPaidByMe: 0, monthlyData: [], groupData: [] };
+      return {
+        totalMyShare: 0,
+        totalPaidByMe: 0,
+        monthlyData: [],
+        groupData: [],
+        chartGroupData: [],
+        reportExpenseCount: 0,
+        activeGroupCount: 0,
+        averageShare: 0,
+      };
     }
 
     let myShare = 0;
     let paidByMe = 0;
+    let countedExpenses = 0;
 
     const monthlyMap = new Map<string, number>();
     const groupMap = new Map<string, number>();
@@ -141,6 +167,7 @@ export const Reports: React.FC = () => {
       const isSettlement = isSettlementExpense(exp);
 
       if (isSettlement) return;
+      countedExpenses += 1;
 
       if (exp.payerId === profile.uid) {
         paidByMe += convertAmount(exp.amount, exp.currency);
@@ -181,8 +208,25 @@ export const Reports: React.FC = () => {
       })
       .sort((a, b) => b.amount - a.amount);
 
-    return { totalMyShare: myShare, totalPaidByMe: paidByMe, monthlyData: mData, groupData: gData };
+    const topGroups = gData.slice(0, 5);
+    const otherAmount = gData.slice(5).reduce((total, group) => total + group.amount, 0);
+    const chartData = otherAmount > 0
+      ? [...topGroups, { name: t('other_groups'), amount: otherAmount }]
+      : topGroups;
+
+    return {
+      totalMyShare: myShare,
+      totalPaidByMe: paidByMe,
+      monthlyData: mData,
+      groupData: gData,
+      chartGroupData: chartData,
+      reportExpenseCount: countedExpenses,
+      activeGroupCount: gData.length,
+      averageShare: countedExpenses > 0 ? myShare / countedExpenses : 0,
+    };
   }, [filteredExpenses, profile, groups, displayCurrency, displayRates]);
+
+  const formatMoney = (value: number) => `${displayCurrency} ${value.toFixed(2)}`;
 
   if (loading) {
     return (
@@ -230,7 +274,7 @@ export const Reports: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             <Card className="rounded-lg border-slate-200 dark:border-white/10 bg-background dark:bg-[#121212] shadow-none">
               <CardHeader className="pb-2">
                 <CardTitle className="text-[10px] font-bold uppercase tracking-widest flex items-center text-slate-500 dark:text-slate-400">
@@ -239,7 +283,7 @@ export const Reports: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-black tracking-tight mb-1">{displayCurrency} {totalMyShare.toFixed(2)}</div>
+                <div className="text-2xl font-black tracking-tight mb-1">{formatMoney(totalMyShare)}</div>
                 <p className="text-xs font-medium text-slate-500">{t('excludes_settlements')}</p>
               </CardContent>
             </Card>
@@ -252,8 +296,34 @@ export const Reports: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-black tracking-tight mb-1 text-[#1ed760]">{displayCurrency} {totalPaidByMe.toFixed(2)}</div>
+                <div className="text-2xl font-black tracking-tight mb-1 text-[#1ed760]">{formatMoney(totalPaidByMe)}</div>
                 <p className="text-xs font-medium text-slate-500">{t('includes_paid_for_others')}</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-lg border-slate-200 dark:border-white/10 bg-background dark:bg-[#121212] shadow-none">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-[10px] font-bold uppercase tracking-widest flex items-center text-slate-500 dark:text-slate-400">
+                  <BarChart3 size={14} className="mr-2" />
+                  {t('active_groups')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-black tracking-tight mb-1">{activeGroupCount}</div>
+                <p className="text-xs font-medium text-slate-500">{t('report_expense_count', { count: reportExpenseCount })}</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-lg border-slate-200 dark:border-white/10 bg-background dark:bg-[#121212] shadow-none">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-[10px] font-bold uppercase tracking-widest flex items-center text-slate-500 dark:text-slate-400">
+                  <TrendingUp size={14} className="mr-2" />
+                  {t('avg_share')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-black tracking-tight mb-1">{formatMoney(averageShare)}</div>
+                <p className="text-xs font-medium text-slate-500">{t('per_expense')}</p>
               </CardContent>
             </Card>
           </div>
@@ -282,27 +352,51 @@ export const Reports: React.FC = () => {
               <CardHeader>
                 <CardTitle className="text-lg font-black uppercase tracking-tight">{t('by_group')}</CardTitle>
               </CardHeader>
-              <CardContent className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={groupData}
-                      dataKey="amount"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                    >
-                      {groupData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <RechartsTooltip contentStyle={{ borderRadius: '1rem', border: 'none', backgroundColor: '#111', color: '#fff', fontWeight: 700 }} formatter={(value: number) => `${displayCurrency} ${value.toFixed(2)}`} />
-                    <Legend wrapperStyle={{ fontSize: '12px', fontWeight: 700 }} />
-                  </PieChart>
-                </ResponsiveContainer>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)]">
+                  <div className="h-[180px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={chartGroupData}
+                          dataKey="amount"
+                          nameKey="name"
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={48}
+                          outerRadius={72}
+                          paddingAngle={3}
+                        >
+                          {chartGroupData.map((entry, index) => (
+                            <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip contentStyle={{ borderRadius: '1rem', border: 'none', backgroundColor: '#111', color: '#fff', fontWeight: 700 }} formatter={(value: number) => formatMoney(value)} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="min-w-0 space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{t('top_groups')}</p>
+                    {groupData.slice(0, 8).map((group, index) => {
+                      const percent = totalMyShare > 0 ? Math.round((group.amount / totalMyShare) * 100) : 0;
+                      return (
+                        <div key={group.name} className="flex items-center gap-3 rounded-md bg-slate-50 px-3 py-2 dark:bg-[#1f1f1f]">
+                          <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-black tracking-tight">{group.name}</p>
+                            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
+                              <div className="h-full rounded-full bg-[#1ed760]" style={{ width: `${Math.min(percent, 100)}%` }} />
+                            </div>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="text-sm font-black tabular-nums">{formatMoney(group.amount)}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{percent}%</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -374,7 +468,11 @@ export const Reports: React.FC = () => {
                             {displayCurrency} {convertAmount(expense.amount, expense.currency).toFixed(2)}
                           </div>
                           <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-0.5">
-                            {expense.payerId === profile?.uid ? t('you_paid') : t('someone_paid')}
+                            <span className="inline-flex max-w-[150px] items-center justify-end gap-2">
+                              <span className="truncate">{getPayerName(expense.payerId, expense.groupId)}</span>
+                              {renderYouBadge(expense.payerId)}
+                              <span className="shrink-0">{t('paid')}</span>
+                            </span>
                           </div>
                         </div>
                       </div>

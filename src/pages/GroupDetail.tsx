@@ -38,8 +38,9 @@ export const GroupDetail: React.FC = () => {
   const { t } = useTranslation();
 
   const getMemberName = (mId: string) => {
-    if (mId === profile?.uid) return t('you');
-    const name = group?.memberNames?.[mId];
+    const name = mId === profile?.uid
+      ? profile?.displayName || group?.memberNames?.[mId] || profile?.email
+      : group?.memberNames?.[mId];
     if (typeof name === 'string' && name.trim() && name !== mId) {
       return name;
     }
@@ -49,11 +50,24 @@ export const GroupDetail: React.FC = () => {
   const getMemberPhoto = (mId: string) => group?.memberPhotos?.[mId] || '';
 
   const getAvatarFallback = (mId: string) => {
-    const name = mId === profile?.uid
-      ? profile?.displayName || profile?.email || t('you')
-      : getMemberName(mId);
+    const name = getMemberName(mId);
     return Array.from(name)[0] || '?';
   };
+
+  const renderYouBadge = (mId: string) => (
+    mId === profile?.uid ? (
+      <span className="inline-flex shrink-0 rounded-full bg-[#1ed760] px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+        {t('you')}
+      </span>
+    ) : null
+  );
+
+  const renderMemberLabel = (mId: string, className = "min-w-0 truncate") => (
+    <span className="inline-flex min-w-0 items-center gap-2">
+      <span className={className}>{getMemberName(mId)}</span>
+      {renderYouBadge(mId)}
+    </span>
+  );
 
   const renderMemberAvatar = (mId: string, className = "w-8 h-8", textClassName = "text-[10px]") => {
     const name = getMemberName(mId);
@@ -756,6 +770,7 @@ export const GroupDetail: React.FC = () => {
     !isUpdatingExpense;
   const convertedEditAmount = roundMoney((Number.isFinite(parsedEditAmount) ? parsedEditAmount : 0) * (editCurrency === group.currency ? 1 : editExchangeRate));
   const availableInviteFriends = (profile?.friends || []).filter((friend) => !group.memberIds.includes(friend.uid));
+  const selectedInviteFriend = availableInviteFriends.find((friend) => friend.uid === selectedInviteFriendId);
 
   return (
     <div className="space-y-8 pb-20">
@@ -787,16 +802,24 @@ export const GroupDetail: React.FC = () => {
                 {availableInviteFriends.length > 0 ? (
                   <Select value={selectedInviteFriendId} onValueChange={setSelectedInviteFriendId}>
                     <SelectTrigger className="h-14 rounded-full px-6 bg-slate-50 dark:bg-[#1f1f1f] border border-slate-200 dark:border-white/10 font-bold shadow-none">
-                      <span className="flex flex-1 text-left truncate">
-                        {selectedInviteFriendId
-                          ? availableInviteFriends.find((friend) => friend.uid === selectedInviteFriendId)?.displayName
-                          : t('select_friend')}
+                      <span className="flex min-w-0 flex-1 items-center gap-3 text-left">
+                        {selectedInviteFriend ? (
+                          <>
+                            <FriendAvatar name={selectedInviteFriend.displayName} photoURL={selectedInviteFriend.photoURL} />
+                            <span className="min-w-0 truncate">{selectedInviteFriend.displayName}</span>
+                          </>
+                        ) : (
+                          <span className="min-w-0 truncate">{t('select_friend')}</span>
+                        )}
                       </span>
                     </SelectTrigger>
                     <SelectContent>
                       {availableInviteFriends.map((friend) => (
-                        <SelectItem key={friend.uid} value={friend.uid}>
-                          {friend.displayName}
+                        <SelectItem key={friend.uid} value={friend.uid} className="py-2">
+                          <span className="flex min-w-0 items-center gap-3">
+                            <FriendAvatar name={friend.displayName} photoURL={friend.photoURL} />
+                            <span className="min-w-0 truncate">{friend.displayName}</span>
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -834,6 +857,9 @@ export const GroupDetail: React.FC = () => {
                         {renderMemberAvatar(mId, "h-10 w-10 shrink-0", "text-xs")}
                         <div className="min-w-0">
                           <p className="truncate text-sm font-black tracking-tight">{getMemberName(mId)}</p>
+                          {mId === profile?.uid && (
+                            <div className="mt-1">{renderYouBadge(mId)}</div>
+                          )}
                           {mId === group.ownerId && (
                             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{t('owner')}</p>
                           )}
@@ -931,13 +957,13 @@ export const GroupDetail: React.FC = () => {
                     setEditExpenseError('');
                   }}>
                     <SelectTrigger className="h-14 rounded-full px-6 bg-slate-50 dark:bg-[#1f1f1f] border border-slate-200 dark:border-white/10 font-bold shadow-none">
-                      <span className="flex flex-1 text-left truncate">
-                        {getResolvedEditPayerId() ? getMemberName(getResolvedEditPayerId()) : t('payer')}
+                      <span className="flex min-w-0 flex-1 text-left">
+                        {getResolvedEditPayerId() ? renderMemberLabel(getResolvedEditPayerId()) : t('payer')}
                       </span>
                     </SelectTrigger>
                     <SelectContent>
                       {group.memberIds.map((memberId) => (
-                        <SelectItem key={memberId} value={memberId}>{getMemberName(memberId)}</SelectItem>
+                        <SelectItem key={memberId} value={memberId}>{renderMemberLabel(memberId)}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -955,7 +981,7 @@ export const GroupDetail: React.FC = () => {
                   <div className="space-y-2">
                     {group.memberIds.map((memberId) => (
                       <div key={memberId} className="grid grid-cols-[1fr_96px] items-center gap-3">
-                        <span className="truncate text-xs font-bold uppercase tracking-widest">{getMemberName(memberId)}</span>
+                        <span className="min-w-0 text-xs font-bold uppercase tracking-widest">{renderMemberLabel(memberId)}</span>
                         <div className="relative">
                           <Input
                             type="number"
@@ -1122,13 +1148,13 @@ export const GroupDetail: React.FC = () => {
                       setExpenseError('');
                     }}>
                       <SelectTrigger className="h-14 rounded-full px-6 bg-slate-50 dark:bg-[#1f1f1f] border border-slate-200 dark:border-white/10 font-bold shadow-none">
-                        <span className="flex flex-1 text-left truncate">
-                          {resolvedPayerId ? getMemberName(resolvedPayerId) : t('payer')}
+                        <span className="flex min-w-0 flex-1 text-left">
+                          {resolvedPayerId ? renderMemberLabel(resolvedPayerId) : t('payer')}
                         </span>
                       </SelectTrigger>
                       <SelectContent>
                         {group.memberIds.map(mId => (
-                          <SelectItem key={mId} value={mId}>{getMemberName(mId)}</SelectItem>
+                          <SelectItem key={mId} value={mId}>{renderMemberLabel(mId)}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -1146,7 +1172,7 @@ export const GroupDetail: React.FC = () => {
                   <div className="space-y-2">
                     {group.memberIds.map((mId) => (
                       <div key={mId} className="grid grid-cols-[1fr_96px] items-center gap-3">
-                        <span className="truncate text-xs font-bold uppercase tracking-widest">{getMemberName(mId)}</span>
+                        <span className="min-w-0 text-xs font-bold uppercase tracking-widest">{renderMemberLabel(mId)}</span>
                         <div className="relative">
                           <Input
                             type="number"
@@ -1226,7 +1252,10 @@ export const GroupDetail: React.FC = () => {
                             <div className="flex justify-between items-start mb-2 text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">
                               <span>{format(expense.date, 'MMM do, yyyy')}</span>
                               <div className="flex items-center gap-2">
-                                <span>{t('paid_by', { name: getMemberName(expense.payerId) })}</span>
+                                <span className="inline-flex min-w-0 items-center gap-2">
+                                  {renderMemberLabel(expense.payerId)}
+                                  <span className="shrink-0">{t('paid')}</span>
+                                </span>
                                 {!expense.isSettlement && (
                                   <button
                                     type="button"
@@ -1314,7 +1343,7 @@ export const GroupDetail: React.FC = () => {
                         {renderMemberAvatar(mId, "w-12 h-12", "text-sm")}
                         <div>
                           <p className="font-bold uppercase tracking-widest text-xs">
-                            {getMemberName(mId)}
+                            {renderMemberLabel(mId)}
                           </p>
                           <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500 dark:text-slate-400">
                             {balanceLabel}
@@ -1352,13 +1381,13 @@ export const GroupDetail: React.FC = () => {
                              setSettlementError('');
                            }}>
                              <SelectTrigger className="h-14 rounded-full px-6 bg-slate-50 dark:bg-[#1f1f1f] border border-slate-200 dark:border-white/10 font-bold shadow-none">
-                               <span className="flex flex-1 text-left truncate">
-                                 {settlePayerId ? getMemberName(settlePayerId) : t('select')}
+                               <span className="flex min-w-0 flex-1 text-left">
+                                 {settlePayerId ? renderMemberLabel(settlePayerId) : t('select')}
                                </span>
                              </SelectTrigger>
                              <SelectContent>
                                {group.memberIds.map(mId => (
-                                 <SelectItem key={mId} value={mId}>{getMemberName(mId)}</SelectItem>
+                                 <SelectItem key={mId} value={mId}>{renderMemberLabel(mId)}</SelectItem>
                                ))}
                              </SelectContent>
                            </Select>
@@ -1370,13 +1399,13 @@ export const GroupDetail: React.FC = () => {
                              setSettlementError('');
                            }}>
                              <SelectTrigger className="h-14 rounded-full px-6 bg-slate-50 dark:bg-[#1f1f1f] border border-slate-200 dark:border-white/10 font-bold shadow-none">
-                               <span className="flex flex-1 text-left truncate">
-                                 {settleSplitId ? getMemberName(settleSplitId) : t('select')}
+                               <span className="flex min-w-0 flex-1 text-left">
+                                 {settleSplitId ? renderMemberLabel(settleSplitId) : t('select')}
                                </span>
                              </SelectTrigger>
                              <SelectContent>
                                {group.memberIds.map(mId => (
-                                 <SelectItem key={mId} value={mId}>{getMemberName(mId)}</SelectItem>
+                                 <SelectItem key={mId} value={mId}>{renderMemberLabel(mId)}</SelectItem>
                                ))}
                              </SelectContent>
                            </Select>
@@ -1439,6 +1468,18 @@ function roundMoney(value: number) {
 
 function uniqueMemberIds(memberIds: string[]) {
   return Array.from(new Set(memberIds.filter(Boolean)));
+}
+
+function FriendAvatar({ name, photoURL }: { name: string; photoURL?: string }) {
+  return (
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-200 text-xs font-black uppercase text-slate-700 dark:bg-slate-800 dark:text-white">
+      {photoURL ? (
+        <img src={photoURL} alt={name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+      ) : (
+        Array.from(name)[0] || '?'
+      )}
+    </span>
+  );
 }
 
 function createEqualPercentageSplits(memberIds: string[]) {
