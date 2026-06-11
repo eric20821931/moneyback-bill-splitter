@@ -227,6 +227,10 @@ export const Reports: React.FC = () => {
   }, [filteredExpenses, profile, groups, displayCurrency, displayRates]);
 
   const formatMoney = (value: number) => `${displayCurrency} ${value.toFixed(2)}`;
+  const formatAxisAmount = (value: number) => {
+    const amount = Math.round(Number(value) || 0);
+    return amount >= 1000 ? `${Math.round(amount / 100) / 10}k` : `${amount}`;
+  };
 
   if (loading) {
     return (
@@ -332,15 +336,29 @@ export const Reports: React.FC = () => {
             {/* Monthly Chart */}
             <Card className="rounded-lg border-slate-200 dark:border-white/10 bg-background dark:bg-[#121212] shadow-none">
               <CardHeader>
-                <CardTitle className="text-lg font-black uppercase tracking-tight">{t('monthly_spending')}</CardTitle>
+                <CardTitle className="flex items-center justify-between gap-3 text-lg font-black uppercase tracking-tight">
+                  <span>{t('monthly_spending')}</span>
+                  <span className="shrink-0 text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400">{displayCurrency}</span>
+                </CardTitle>
               </CardHeader>
-              <CardContent className="h-[300px]">
+              <CardContent className="h-[300px] pl-1 pr-2 sm:px-6">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <BarChart data={monthlyData} margin={{ top: 10, right: 4, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" opacity={0.2} />
                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 700 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 700 }} tickFormatter={(value) => `${displayCurrency} ${value}`} />
-                    <RechartsTooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '1rem', border: 'none', backgroundColor: '#111', color: '#fff', fontWeight: 700 }} />
+                    <YAxis
+                      width={44}
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fontWeight: 700 }}
+                      tickMargin={6}
+                      tickFormatter={formatAxisAmount}
+                    />
+                    <RechartsTooltip
+                      cursor={{fill: 'transparent'}}
+                      contentStyle={{ borderRadius: '1rem', border: 'none', backgroundColor: '#111', color: '#fff', fontWeight: 700 }}
+                      formatter={(value: number) => [formatMoney(Number(value) || 0), t('amount')]}
+                    />
                     <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
