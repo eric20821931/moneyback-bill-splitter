@@ -1,6 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+const getInitialLanguage = () => {
+  if (typeof window === 'undefined') return 'en';
+  return window.localStorage.getItem('moneyback_language') || 'en';
+};
+
 const resources = {
   en: {
     translation: {
@@ -334,7 +339,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "zh", // default to zh as the user prompt was in Chinese
+    lng: getInitialLanguage(),
     interpolation: {
       escapeValue: false
     }
