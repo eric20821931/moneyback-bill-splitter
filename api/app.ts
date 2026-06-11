@@ -229,7 +229,7 @@ async function updateProfile(uid: string, payload: any) {
 
 async function listGroups(uid: string) {
   const rows = await sql!`
-    select g.*
+    select distinct g.*
     from groups g
     join group_members gm on gm.group_id = g.id
     where gm.user_id = ${uid}
@@ -567,11 +567,20 @@ async function validateExpensePayload(groupId: string, payload: any, fallbackPay
 
 async function mapGroupWithMembers(row: any) {
   const members = await sql!`
-    select gm.user_id, gm.display_name, coalesce(u.photo_url, '') as photo_url
-    from group_members gm
-    left join users u on u.uid = gm.user_id
-    where gm.group_id = ${row.id}
-    order by gm.created_at asc
+    select user_id, display_name, photo_url
+    from (
+      select
+        gm.user_id,
+        gm.display_name,
+        coalesce(u.photo_url, '') as photo_url,
+        gm.created_at,
+        row_number() over (partition by gm.user_id order by gm.created_at asc) as member_rank
+      from group_members gm
+      left join users u on u.uid = gm.user_id
+      where gm.group_id = ${row.id}
+    ) members
+    where member_rank = 1
+    order by created_at asc
   `;
   const memberIds = members.map((member) => member.user_id as string);
   const memberNames = Object.fromEntries(members.map((member) => [member.user_id, member.display_name]));

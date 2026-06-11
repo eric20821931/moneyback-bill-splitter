@@ -48,6 +48,13 @@ export const GroupDetail: React.FC = () => {
 
   const getMemberPhoto = (mId: string) => group?.memberPhotos?.[mId] || '';
 
+  const getAvatarFallback = (mId: string) => {
+    const name = mId === profile?.uid
+      ? profile?.displayName || profile?.email || t('you')
+      : getMemberName(mId);
+    return Array.from(name)[0] || '?';
+  };
+
   const renderMemberAvatar = (mId: string, className = "w-8 h-8", textClassName = "text-[10px]") => {
     const name = getMemberName(mId);
     const photo = getMemberPhoto(mId);
@@ -57,7 +64,7 @@ export const GroupDetail: React.FC = () => {
         {photo ? (
           <img src={photo} alt={name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
         ) : (
-          Array.from(name)[0]
+          getAvatarFallback(mId)
         )}
       </div>
     );
@@ -115,7 +122,7 @@ export const GroupDetail: React.FC = () => {
         ]);
 
         if (cancelled) return;
-        const memberIds = Array.isArray(loadedGroup.memberIds) ? loadedGroup.memberIds : [];
+        const memberIds = uniqueMemberIds(Array.isArray(loadedGroup.memberIds) ? loadedGroup.memberIds : []);
         setGroup({ ...loadedGroup, memberIds });
         setExpenses((loadedExpenses || []).map((expense) => ({
           ...expense,
@@ -1296,16 +1303,21 @@ export const GroupDetail: React.FC = () => {
                 {group.memberIds.map(mId => {
                   const bal = userBalances[mId] || 0;
                   const isYou = mId === profile?.uid;
+                  const balanceLabel = bal > 0
+                    ? t(isYou ? 'you_are_owed' : 'is_owed')
+                    : bal < 0
+                      ? t(isYou ? 'you_owe' : 'owes')
+                      : t('all_settled');
                   return (
                     <div key={mId} className="flex items-center justify-between p-6 rounded-lg bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-white/10">
                       <div className="flex items-center gap-4">
                         {renderMemberAvatar(mId, "w-12 h-12", "text-sm")}
                         <div>
-                          <p className="font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                            {getMemberName(mId)} {isYou && <span className="text-[10px] bg-[#1ed760] text-black px-2 py-0.5 rounded-full uppercase">{t('you')}</span>}
+                          <p className="font-bold uppercase tracking-widest text-xs">
+                            {getMemberName(mId)}
                           </p>
                           <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500 dark:text-slate-400">
-                            {bal > 0 ? t('you_are_owed') : bal < 0 ? t('you_owe') : t('all_settled')}
+                            {balanceLabel}
                           </p>
                         </div>
                       </div>
@@ -1423,6 +1435,10 @@ function cn(...inputs: any[]) {
 
 function roundMoney(value: number) {
   return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
+function uniqueMemberIds(memberIds: string[]) {
+  return Array.from(new Set(memberIds.filter(Boolean)));
 }
 
 function createEqualPercentageSplits(memberIds: string[]) {

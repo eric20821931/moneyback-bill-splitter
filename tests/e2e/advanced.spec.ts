@@ -27,6 +27,8 @@ test('multi-friend, multi-currency split, avatar upload, and invalid inputs', as
   expect(profile.ok).toBe(true);
   const currentUserId = profile.data.profile.uid;
   const originalPhotoURL = profile.data.profile.photoURL || '';
+  const baselineSummary = await api<{ totalOwedToYou: number; totalYouOwe: number; totalBalance: number }>(page, 'balances.summary');
+  expect(baselineSummary.ok).toBe(true);
 
   await expectApiOk(await api(page, 'friends.add', { email: friendA.email }));
   await expectApiOk(await api(page, 'friends.add', { email: friendB.email }));
@@ -81,9 +83,9 @@ test('multi-friend, multi-currency split, avatar upload, and invalid inputs', as
 
   const summary = await api<{ totalOwedToYou: number; totalYouOwe: number; totalBalance: number }>(page, 'balances.summary');
   expect(summary.ok).toBe(true);
-  expect(summary.data.totalOwedToYou).toBeGreaterThanOrEqual(300);
-  expect(summary.data.totalYouOwe).toBe(0);
-  expect(summary.data.totalBalance).toBeGreaterThanOrEqual(300);
+  expect(summary.data.totalOwedToYou - baselineSummary.data.totalOwedToYou).toBeGreaterThanOrEqual(300);
+  expect(summary.data.totalYouOwe).toBeCloseTo(baselineSummary.data.totalYouOwe, 2);
+  expect(summary.data.totalBalance - baselineSummary.data.totalBalance).toBeGreaterThanOrEqual(300);
 
   await expectInvalid(page, 'expenses.create', {
     groupId,
