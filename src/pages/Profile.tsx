@@ -121,21 +121,21 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 max-w-2xl mx-auto pb-20">
-      <header className="mb-12">
-        <h2 className="text-xl font-black tracking-tight leading-none mb-4 uppercase">{t('settings')}</h2>
-        <p className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{t('settings_subtitle')}</p>
+    <div className="mx-auto max-w-2xl space-y-6 pb-20 sm:space-y-10">
+      <header className="mb-6 sm:mb-12">
+        <h2 className="mb-3 text-lg font-black uppercase leading-none tracking-tight sm:mb-4 sm:text-xl">{t('settings')}</h2>
+        <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 sm:text-xs sm:tracking-widest">{t('settings_subtitle')}</p>
       </header>
 
       {/* Profile Card */}
-      <Card className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#121212] shadow-none p-8">
-        <div className="flex items-center gap-8">
-          <div className="relative">
+      <Card className="rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-none dark:border-white/10 dark:bg-[#121212] sm:p-8">
+        <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+          <div className="relative self-start">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploadingPhoto}
-              className="group relative w-24 h-24 rounded-full bg-white dark:bg-[#121212] flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 disabled:opacity-60"
+              className="group relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white disabled:opacity-60 dark:border-white/10 dark:bg-[#121212] sm:h-24 sm:w-24"
               aria-label={t('profile_photo')}
             >
                {profile?.photoURL ? (
@@ -155,9 +155,9 @@ export const Profile: React.FC = () => {
               className="hidden"
             />
           </div>
-          <div className="flex-1 space-y-4">
+          <div className="min-w-0 flex-1 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{t('display_name')}</label>
+              <label className="text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 sm:tracking-widest">{t('display_name')}</label>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Input
                   value={displayName}
@@ -165,42 +165,42 @@ export const Profile: React.FC = () => {
                     setDisplayName(event.target.value);
                     setProfileError('');
                   }}
-                  className="h-12 rounded-full bg-white px-5 text-lg font-black tracking-tight shadow-none dark:bg-[#1f1f1f]"
+                  className="h-12 rounded-full bg-white px-5 text-base font-black tracking-tight shadow-none dark:bg-[#1f1f1f] sm:text-lg"
                 />
                 <Button
                   disabled={!displayName.trim() || (displayName.trim() === profile?.displayName && photoURL.trim() === (profile?.photoURL || '')) || isSavingName}
                   onClick={handleSaveProfile}
-                  className="h-12 rounded-full bg-black px-6 text-xs font-bold uppercase tracking-widest text-white shadow-none hover:bg-[#1ed760] hover:text-black dark:bg-[#1ed760] dark:text-black"
+                  className="h-12 w-full rounded-full bg-black px-6 text-xs font-bold uppercase tracking-widest text-white shadow-none hover:bg-[#1ed760] hover:text-black dark:bg-[#1ed760] dark:text-black sm:w-auto"
                 >
                   {isSavingName ? t('saving') : t('save')}
                 </Button>
               </div>
               {profileError && (
-                <p className="rounded-md bg-red-50 px-4 py-3 text-xs font-bold uppercase tracking-widest text-red-600 dark:bg-red-500/10 dark:text-red-300">
+                <p className="rounded-md bg-red-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-red-600 dark:bg-red-500/10 dark:text-red-300 sm:tracking-widest">
                   {profileError}
                 </p>
               )}
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{t('email_address')}</label>
-              <div className="h-12 rounded-full border border-slate-200 bg-white px-5 flex items-center text-xs font-bold uppercase tracking-widest text-slate-500 dark:border-white/10 dark:bg-[#1f1f1f] dark:text-slate-400">
+              <label className="text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 sm:tracking-widest">{t('email_address')}</label>
+              <div className="flex h-12 min-w-0 items-center truncate rounded-full border border-slate-200 bg-white px-5 text-xs font-bold tracking-wide text-slate-500 dark:border-white/10 dark:bg-[#1f1f1f] dark:text-slate-400 sm:uppercase sm:tracking-widest">
                 {profile?.email}
               </div>
             </div>
             <div className="mt-6 flex gap-2">
-               <span className="px-3 py-1 bg-[#1ed760] text-black rounded-full text-[10px] font-black uppercase tracking-widest">{t('verified')}</span>
+               <span className="rounded-full bg-[#1ed760] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-black">{t('verified')}</span>
             </div>
           </div>
         </div>
       </Card>
 
-      <Card className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-none dark:border-white/10 dark:bg-[#121212]">
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 dark:border-white/10 dark:bg-[#1f1f1f] dark:text-white/60">
+      <Card className="rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-none dark:border-white/10 dark:bg-[#121212] sm:p-6">
+        <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 dark:border-white/10 dark:bg-[#1f1f1f] dark:text-white/60 sm:h-12 sm:w-12">
             <RefreshCw size={20} />
           </div>
-          <div className="space-y-2">
-            <h3 className="text-sm font-black uppercase tracking-widest">{t('exchange_rate_title')}</h3>
+          <div className="min-w-0 space-y-2">
+            <h3 className="text-sm font-black uppercase tracking-wide sm:tracking-widest">{t('exchange_rate_title')}</h3>
             <p className="text-sm font-medium leading-6 text-slate-500 dark:text-slate-400">
               {t('exchange_rate_help')}
             </p>
@@ -208,17 +208,17 @@ export const Profile: React.FC = () => {
               href="https://www.exchangerate-api.com/docs/free"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex text-xs font-black uppercase tracking-widest text-green-600 hover:text-green-700 dark:text-[#1ed760]"
+              className="inline-flex text-xs font-black uppercase tracking-wide text-green-600 hover:text-green-700 dark:text-[#1ed760] sm:tracking-widest"
             >
               {t('exchange_rate_source')}
             </a>
             <div className="pt-4">
               <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                <p className="text-[10px] font-black uppercase tracking-wide text-slate-500 dark:text-slate-400 sm:tracking-widest">
                   {t('usd_rate_base')}
                 </p>
                 {formattedRatesUpdatedAt && (
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400 dark:text-slate-500 sm:tracking-widest">
                     {t('rates_updated_at', { date: formattedRatesUpdatedAt })}
                   </p>
                 )}
@@ -237,7 +237,7 @@ export const Profile: React.FC = () => {
                       key={currency}
                       className="rounded-md border border-slate-200 bg-white px-3 py-2 dark:border-white/10 dark:bg-[#1f1f1f]"
                     >
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                      <p className="text-[10px] font-black uppercase tracking-wide text-slate-400 dark:text-slate-500 sm:tracking-widest">
                         {currency}
                       </p>
                       <p className="mt-1 text-sm font-black tabular-nums tracking-tight text-slate-900 dark:text-white">
@@ -256,7 +256,7 @@ export const Profile: React.FC = () => {
         <Button
           variant="outline"
           onClick={() => signOut()}
-          className="w-full h-16 rounded-full border border-[#f3727f] text-[#f3727f] hover:bg-[#f3727f] hover:text-white dark:hover:text-black font-bold uppercase tracking-widest text-xs gap-3 shadow-none mt-8"
+          className="mt-4 h-14 w-full gap-3 rounded-full border border-[#f3727f] text-xs font-bold uppercase tracking-widest text-[#f3727f] shadow-none hover:bg-[#f3727f] hover:text-white dark:hover:text-black sm:mt-8 sm:h-16"
         >
           <LogOut size={20} /> {t('logout')}
         </Button>
