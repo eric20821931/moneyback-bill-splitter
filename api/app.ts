@@ -94,7 +94,7 @@ async function ensureSchema() {
         email text not null unique,
         photo_url text,
         preferred_currency text not null default 'TWD',
-        language text not null default 'zh',
+        language text not null default 'en',
         theme text not null default 'light',
         email_notifications boolean not null default true,
         push_notifications boolean not null default false,
@@ -169,11 +169,13 @@ async function syncProfile(uid: string, payload: any) {
   const displayName = cleanText(payload.displayName || 'Anonymous User', MAX_DISPLAY_NAME_LENGTH);
   const email = String(payload.email || '').toLowerCase();
   const photoURL = cleanPhotoURL(payload.photoURL);
+  const language = normalizeEnum(payload.language || 'en', LANGUAGES, 'en');
+  const theme = normalizeEnum(payload.theme || 'light', THEMES, 'light');
   if (!email) throw new Error('missing_email');
 
   await sql!`
-    insert into users (uid, display_name, email, photo_url)
-    values (${uid}, ${displayName}, ${email}, ${photoURL})
+    insert into users (uid, display_name, email, photo_url, language, theme)
+    values (${uid}, ${displayName}, ${email}, ${photoURL}, ${language}, ${theme})
     on conflict (uid) do update set
       email = excluded.email,
       updated_at = now()

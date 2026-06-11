@@ -25,7 +25,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>(profile?.theme || 'dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>(profile?.theme || 'light');
 
   useEffect(() => {
     if (profile?.theme) {

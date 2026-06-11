@@ -10,8 +10,8 @@ import { cn } from '@/lib/utils';
 export const Landing: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    if (typeof window === 'undefined') return 'dark';
-    return window.localStorage.getItem('moneyback_theme') === 'light' ? 'light' : 'dark';
+    if (typeof window === 'undefined') return 'light';
+    return window.localStorage.getItem('moneyback_theme') === 'dark' ? 'dark' : 'light';
   });
 
   useEffect(() => {

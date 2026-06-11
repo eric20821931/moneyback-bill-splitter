@@ -1,4 +1,4 @@
-# moneyback
+# Moneyback
 
 Moneyback is a web app for splitting group expenses with friends. It supports Google sign-in through Clerk, group expenses, settlements, percentage splits, avatars, reports, and multi-currency display.
 

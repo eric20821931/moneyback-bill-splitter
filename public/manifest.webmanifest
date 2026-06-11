@@ -1,0 +1,18 @@
+{
+  "name": "Moneyback",
+  "short_name": "Moneyback",
+  "description": "Split shared expenses, settle balances, and manage multiple currencies.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f6f6",
+  "theme_color": "#1ed760",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "name": "moneyback (還我錢)",
+  "name": "Moneyback",
   "description": "A bill-splitting application featuring group expenses, multi-currency support, detailed reports, Clerk authentication, and dark mode.",
   "requestFramePermissions": [],
   "majorCapabilities": []

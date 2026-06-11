@@ -9,7 +9,7 @@ const getInitialLanguage = () => {
 const resources = {
   en: {
     translation: {
-      "app_name": "moneyback",
+      "app_name": "Moneyback",
       "landing_badge": "Effortless splitting",
       "landing_login": "Log in",
       "landing_title": "Stop stressing over",
